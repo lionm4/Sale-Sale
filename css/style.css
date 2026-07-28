@@ -84,7 +84,7 @@ header {
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
- 
+
 .botao-tema:hover {
     background-color: var(--azul-destaque);
     color: var(--branco);
