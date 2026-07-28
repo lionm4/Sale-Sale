@@ -19,3 +19,4 @@ function alternarTema() {
         root.style.setProperty('--azul-escuro', '#1a2440');
     }
 }
+ordem
