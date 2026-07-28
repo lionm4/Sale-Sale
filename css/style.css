@@ -13,13 +13,18 @@
     padding: 0;
     box-sizing: border-box;
 }
- 
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background-color: var(--azul-medio);
     color: var(--texto-escuro);
 }
-
+body.tema-claro {
+    --azul-escuro: #c7c9cf;      
+    --azul-medio: #ffffff;       /* Fundo fica branco/claro */
+    --texto-escuro: #1a2440;     /* Texto fica escuro */
+    --cinza-claro: #1a2440;      /* Ajuste de contraste para o botão */
+}
 
 header {
     width: 100%;
