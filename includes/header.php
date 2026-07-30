@@ -10,8 +10,8 @@
             <a href="compare.php">Compare</a>
         </nav>
 
-        <form action="/buscar" method="get" class="search-form">
-            <input type="search" name="q" placeholder="Que jogo você procura?">
+        <form id="formBusca" class="search-form">
+            <input id="inputJogo" type="search" name="q" placeholder="Que jogo você procura?">
         </form>
 
          <div class="opcoes">
