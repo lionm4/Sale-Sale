@@ -8,9 +8,11 @@
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
+    <div id="resultado" style="margin: 20px; text-align: center;"></div>
 
     <!-- conteúdo da homepage aqui -->
 
     <?php include '../includes/footer.php'; ?>
+    <script src="../js/script.js"></script>
 </body>
 </html>
