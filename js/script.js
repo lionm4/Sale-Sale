@@ -1,11 +1,8 @@
-// Seleciona o formulário, o input e a div de resultado
 const form = document.getElementById('formBusca');
 const inputJogo = document.getElementById('inputJogo');
 const divResultado = document.getElementById('resultado');
 
-// Intercepta o envio do formulário
 form.addEventListener('submit', async function(event) {
-    // Previne que a página recarregue (comportamento padrão do form)
     event.preventDefault(); 
     
     const query = inputJogo.value.trim();
@@ -18,8 +15,9 @@ form.addEventListener('submit', async function(event) {
     divResultado.innerHTML = "Buscando...";
 
     try {
-        // ETAPA 1: Busca o jogo pelo nome digitado para descobrir o gameID
-        const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}`);
+        // ETAPA 1: Busca os jogos pelo nome
+        // ETAPA 1
+const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}`);
         const dadosBusca = await resBusca.json();
 
         if (dadosBusca.length === 0) {
@@ -27,30 +25,46 @@ form.addEventListener('submit', async function(event) {
             return;
         }
 
-        // Pega o ID do primeiro jogo da lista de resultados
-        const gameID = dadosBusca[0].gameID;
+        // Limita a busca aos 5 primeiros resultados (ou menos, se a API trouxer menos de 5)
+        const primeirosJogos = dadosBusca.slice(0, 5);
 
-        // ETAPA 2: Usa o gameID para buscar os detalhes do jogo
-        const resDetalhes = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${gameID}`);
-        const dadosDetalhes = await resDetalhes.json();
+        // ETAPA 2: Cria uma lista de requisições para os detalhes de cada um dos 5 jogos
+        const promessasDetalhes = primeirosJogos.map(jogo => 
+            fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`).then(res => res.json())
+                );
 
-        // Extrai as informações de preço histórico
-        const nomeDoJogo = dadosDetalhes.info.title;
-        const menorPreco = dadosDetalhes.cheapestPriceEver.price;
-        
-        // A API retorna a data em timestamp UNIX (segundos), então multiplicamos por 1000 para converter para milissegundos
-        const dataTimestamp = dadosDetalhes.cheapestPriceEver.date * 1000;
-        const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
+        // Aguarda a resposta de todas as 5 requisições ao mesmo tempo
+        const listaDetalhes = await Promise.all(promessasDetalhes);
 
-        // Exibe o resultado na tela
-        divResultado.innerHTML = `O menor preço histórico de <strong>${nomeDoJogo}</strong> foi <strong>$${menorPreco}</strong> em ${dataFormatada}.`;
+        // Limpa o texto de "Buscando..." para colocar os cards
+        divResultado.innerHTML = "";
+
+        // ETAPA 3: Passa por cada jogo e cria o HTML dele
+        listaDetalhes.forEach(dadosDetalhes => {
+            const nomeDoJogo = dadosDetalhes.info.title;
+            const urlImagem = dadosDetalhes.info.thumb;
+            const menorPreco = dadosDetalhes.cheapestPriceEver.price;
+            
+            const dataTimestamp = dadosDetalhes.cheapestPriceEver.date * 1000;
+            const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
+
+            // Cria uma caixinha (card) para cada jogo e adiciona na div de resultado
+            divResultado.innerHTML += `
+                <div style="display: flex; align-items: center; gap: 15px; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
+                    <img src="${urlImagem}" alt="Capa do jogo ${nomeDoJogo}" style="width: 120px; height: auto; border-radius: 4px; object-fit: cover;">
+                    <div>
+                        <h3 style="margin: 0 0 5px 0;">${nomeDoJogo}</h3>
+                        <p style="margin: 0;">Menor preço histórico: <strong>$${menorPreco}</strong> em ${dataFormatada}.</p>
+                    </div>
+                </div>
+            `;
+        });
 
     } catch (erro) {
         console.error("Erro na requisição:", erro);
         divResultado.innerHTML = "Ocorreu um erro ao buscar os dados da API.";
     }
 });
-
 
 
 function alternarTema() {
