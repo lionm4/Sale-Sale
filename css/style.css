@@ -19,6 +19,7 @@ body {
     background-color: var(--azul-medio);
     color: var(--texto-escuro);
 }
+
 body.tema-claro {
     --azul-escuro: #c7c9cf;      
     --azul-medio: #ffffff;       /* Fundo fica branco/claro */
@@ -30,24 +31,34 @@ header {
     width: 100%;
 }
  
-/* Barra superior — região/tema (equivalente à faixa "Region" da referência) */
+/* ============================================
+   BARRA SUPERIOR - CABEÇA (modificada)
+   ============================================ */
 .cabeca {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 24px;
     background-color: var(--azul-escuro);
+    gap: 20px;
+    flex-wrap: wrap;
 }
  
 /* Logo */
+.logo {
+    flex-shrink: 0;
+}
+
 .logo img {
     height: 82px;
+    display: block;
 }
  
 /* Menu de navegação */
 .menu {
     display: flex;
     gap: 24px;
+    flex-shrink: 0;
 }
  
 .menu a {
@@ -61,12 +72,80 @@ header {
 .menu a:hover {
     color: var(--azul-destaque);
 }
+
+/* ============================================
+   BARRA DE PESQUISA (ESTILO STEAM)
+   ============================================ */
+.search-form {
+    flex: 1;
+    max-width: 500px;
+    min-width: 200px;
+    display: flex;
+    background: var(--cinza-nav);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--azul-destaque);
+    transition: all 0.3s;
+}
+
+.search-form:focus-within {
+    border-color: var(--azul-destaque);
+    box-shadow: 0 0 0 3px rgba(77, 111, 255, 0.3);
+}
  
-/* Seletor de região e botão de tema */
+.search-form input[type="search"] {
+    flex: 1;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    color: var(--branco);
+    font-size: 14px;
+    outline: none;
+    min-width: 100px;
+}
+
+.search-form input[type="search"]::placeholder {
+    color: var(--cinza-claro);
+    font-size: 13px;
+}
+
+.search-form input[type="search"]:focus {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Botão de busca com ícone de lupa */
+.search-button {
+    background: transparent;
+    border: none;
+    color: var(--cinza-claro);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.search-button:hover {
+    color: var(--branco);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.search-button svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+ 
+/* ============================================
+   OPÇÕES (Seletor de região e botão tema)
+   ============================================ */
 .opcoes {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
 }
  
 .seletor-regiao {
@@ -77,6 +156,11 @@ header {
     padding: 6px 10px;
     font-size: 13px;
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+.seletor-regiao:hover {
+    border-color: var(--branco);
 }
  
 .botao-tema {
@@ -87,7 +171,7 @@ header {
     padding: 6px 12px;
     font-size: 13px;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .botao-tema:hover {
@@ -95,43 +179,159 @@ header {
     color: var(--branco);
     border-color: var(--azul-destaque);
 }
- 
-/* Busca */
-.search-form {
-    display: flex;
+
+/* ============================================
+   TEMA CLARO
+   ============================================ */
+body.tema-claro .search-form {
+    background: var(--branco);
+    border-color: #d1d5db;
 }
- 
-.search-form input {
-    width: 220px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 20px;
+
+body.tema-claro .search-form:focus-within {
+    border-color: var(--azul-destaque);
+    box-shadow: 0 0 0 3px rgba(77, 111, 255, 0.2);
+}
+
+body.tema-claro .search-form input[type="search"] {
+    color: var(--texto-escuro);
+}
+
+body.tema-claro .search-form input[type="search"]::placeholder {
+    color: #9ca3af;
+}
+
+body.tema-claro .search-button {
+    color: #6b7280;
+}
+
+body.tema-claro .search-button:hover {
+    color: var(--texto-escuro);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.tema-claro .seletor-regiao {
     background-color: var(--branco);
+    color: var(--texto-escuro);
+    border-color: #d1d5db;
+}
+
+body.tema-claro .botao-tema {
+    color: var(--texto-escuro);
+    border-color: #d1d5db;
+}
+
+body.tema-claro .botao-tema:hover {
+    background-color: var(--azul-destaque);
+    color: var(--branco);
+    border-color: var(--azul-destaque);
+}
+
+/* ============================================
+   RESULTADOS DA PESQUISA (COMPACTO ESTILO STEAM)
+   ============================================ */
+
+#resultado {
+    max-width: 900px;
+    margin:  8px 450px 8px auto !important; /* Mudança aqui: alinha à esquerda */
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: var(--cinza-claro);
+    font-size: 12px;
+    text-align: right !important; /* Mudança aqui: alinha texto à esquerda */
+    min-height: 20px;
+}
+
+/* Card de resultado estilo Steam - MAIS COMPACTO */
+#resultado > div {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    cursor: pointer;
+    text-align: left;
+    max-width: 100%;
+}
+
+#resultado > div:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--azul-destaque);
+    transform: translateX(3px);
+}
+
+#resultado > div img {
+    width: 50px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+#resultado > div h3 {
+    margin: 0;
     font-size: 13px;
-    outline: none;
-}
- 
-.search-form input::placeholder {
-    color: #888;
-}
- 
-/* Faixa secundária cinza (opcional — se quiser separar logo/menu da barra de região) */
-.faixa-menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background-color: var(--cinza-nav);
+    font-weight: 500;
+    color: var(--branco);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
-/*//////////////////////////////////////////////////////////////////*/
+#resultado > div p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--cinza-claro);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
 
-.faixa-menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background-color: var(--cinza-nav);
+#resultado > div p strong {
+    color: #48bb78;
+    font-weight: 600;
+}
+
+/* Tema claro para resultados */
+body.tema-claro #resultado > div {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+body.tema-claro #resultado > div:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--azul-destaque);
+}
+
+body.tema-claro #resultado > div h3 {
+    color: var(--texto-escuro);
+}
+
+body.tema-claro #resultado > div p {
+    color: #6b7280;
+}
+
+/* ============================================
+   MENSAGENS DA BUSCA (mais compactas)
+   ============================================ */
+
+#resultado:empty::before {
+    content: "";
+}
+
+#resultado:contains("Buscando"),
+#resultado:contains("Digite pelo menos"),
+#resultado:contains("Nenhum jogo"),
+#resultado:contains("Por favor") {
+    font-size: 13px;
+    padding: 8px 0;
+    color: var(--cinza-claro);
 }
  
 /* ============================================
@@ -151,6 +351,147 @@ section.promocoes p {
     font-size: 15px;
     color: var(--cinza-claro);
 }
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+@media (max-width: 1024px) {
+    .cabeca {
+        gap: 15px;
+    }
+
+    .search-form {
+        max-width: 350px;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cabeca {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .logo {
+        text-align: center;
+    }
+
+    .logo img {
+        height: 60px;
+    }
+
+    .menu {
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .menu a {
+        font-size: 14px;
+    }
+
+    .search-form {
+        max-width: 100%;
+        min-width: auto;
+        border-radius: 20px;
+    }
+
+    .search-form input[type="search"] {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .opcoes {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    #resultado {
+        padding: 0 12px;
+        gap: 3px;
+        max-width: 100%;
+    }
+
+    #resultado > div {
+        padding: 4px 8px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    #resultado > div img {
+        width: 40px;
+        height: 22px;
+    }
+
+    #resultado > div h3 {
+        font-size: 12px;
+        flex-basis: 100%;
+        white-space: normal;
+    }
+
+    #resultado > div p {
+        font-size: 10px;
+        white-space: normal;
+        flex-basis: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cabeca {
+        padding: 8px 12px;
+    }
+
+    .menu {
+        gap: 12px;
+    }
+
+    .menu a {
+        font-size: 12px;
+    }
+
+    .search-form input[type="search"] {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .search-button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .seletor-regiao,
+    .botao-tema {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    section.promocoes {
+        padding: 20px 12px;
+    }
+
+    #resultado {
+        padding: 0 8px;
+    }
+
+    #resultado > div {
+        padding: 3px 6px;
+        gap: 6px;
+    }
+
+    #resultado > div img {
+        width: 35px;
+        height: 20px;
+    }
+
+    #resultado > div h3 {
+        font-size: 11px;
+    }
+
+    #resultado > div p {
+        font-size: 9px;
+    }
+}
  
 /* ============================================
    FOOTER
@@ -165,4 +506,16 @@ footer {
 .rodape p {
     color: var(--cinza-claro);
     font-size: 13px;
-    }
+}
+
+/* ============================================
+   ANIMAÇÃO DE LOADING
+   ============================================ */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#resultado:has(> :contains("Buscando")) {
+    animation: pulse 1.5s ease-in-out infinite;
+}

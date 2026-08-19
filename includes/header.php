@@ -11,7 +11,19 @@
             </nav>
 
             <form id="formBusca" class="search-form">
-            <input id="inputJogo" type="search" name="q" placeholder="Que jogo você procura?">
+            <input 
+                id="inputJogo" 
+                type="search" 
+                name="q" 
+                placeholder="Buscar jogos..." 
+                autocomplete="off"
+            >
+            <button type="submit" class="search-button" aria-label="Buscar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
             </form>
 
             <div class="opcoes">
@@ -21,11 +33,11 @@
                     <option value="eu">Europa (€)</option>
                 </select>
 
-                <!-- Botão chamando a função -->
+                
                 <button class="botao-tema" onclick="alternarTema()">Tema</button>
             </div>
         </div>
-</header> <!-- O header fecha aqui, antes do conteúdo da página -->
+</header> 
 
 <script>
         (function() {

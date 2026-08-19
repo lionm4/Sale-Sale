@@ -1,23 +1,26 @@
 const form = document.getElementById('formBusca');
 const inputJogo = document.getElementById('inputJogo');
 const divResultado = document.getElementById('resultado');
+let timeoutID = null;
+let ultimaBusca = '';
 
-form.addEventListener('submit', async function(event) {
-    event.preventDefault(); 
+
+async function buscarJogos(query) {
     
-    const query = inputJogo.value.trim();
-    
-    if (!query) {
-        divResultado.innerHTML = "Por favor, digite o nome de um jogo.";
+    if (!query || query.length < 3) {
+        divResultado.innerHTML = query.length > 0 ? "Digite pelo menos 3 caracteres..." : "";
         return;
     }
+
+    
+    if (query === ultimaBusca) return;
+    ultimaBusca = query;
 
     divResultado.innerHTML = "Buscando...";
 
     try {
-        // ETAPA 1: Busca os jogos pelo nome
-        // ETAPA 1
-const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}`);
+        // endpoint
+        const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}`);
         const dadosBusca = await resBusca.json();
 
         if (dadosBusca.length === 0) {
@@ -25,21 +28,20 @@ const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${e
             return;
         }
 
-        // Limita a busca aos 5 primeiros resultados (ou menos, se a API trouxer menos de 5)
+        // Limita a busca aos 5 primeiros resultados
         const primeirosJogos = dadosBusca.slice(0, 5);
 
-        // ETAPA 2: Cria uma lista de requisições para os detalhes de cada um dos 5 jogos
+        // ETAPA 2: Cria uma lista de requisições para os detalhes
         const promessasDetalhes = primeirosJogos.map(jogo => 
             fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`).then(res => res.json())
-                );
+        );
 
-        // Aguarda a resposta de todas as 5 requisições ao mesmo tempo
         const listaDetalhes = await Promise.all(promessasDetalhes);
 
-        // Limpa o texto de "Buscando..." para colocar os cards
+        
         divResultado.innerHTML = "";
 
-        // ETAPA 3: Passa por cada jogo e cria o HTML dele
+       
         listaDetalhes.forEach(dadosDetalhes => {
             const nomeDoJogo = dadosDetalhes.info.title;
             const urlImagem = dadosDetalhes.info.thumb;
@@ -48,7 +50,6 @@ const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${e
             const dataTimestamp = dadosDetalhes.cheapestPriceEver.date * 1000;
             const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
 
-            // Cria uma caixinha (card) para cada jogo e adiciona na div de resultado
             divResultado.innerHTML += `
                 <div style="display: flex; align-items: center; gap: 15px; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
                     <img src="${urlImagem}" alt="Capa do jogo ${nomeDoJogo}" style="width: 120px; height: auto; border-radius: 4px; object-fit: cover;">
@@ -64,18 +65,77 @@ const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${e
         console.error("Erro na requisição:", erro);
         divResultado.innerHTML = "Ocorreu um erro ao buscar os dados da API.";
     }
+}
+
+
+function handleInput(event) {
+    const query = event.target.value.trim();
+
+    
+    if (timeoutID) {
+        clearTimeout(timeoutID);
+    }
+
+    
+    if (query.length < 3) {
+        divResultado.innerHTML = query.length > 0 ? "Digite pelo menos 3 caracteres..." : "";
+        ultimaBusca = ''; // Reseta para permitir nova busca depois
+        return;
+    }
+
+    
+    timeoutID = setTimeout(() => {
+        buscarJogos(query);
+    }, 500);
+}
+
+
+form.addEventListener('submit', async function(event) {
+    event.preventDefault(); 
+    
+    const query = inputJogo.value.trim();
+    
+    if (!query) {
+        divResultado.innerHTML = "Por favor, digite o nome de um jogo.";
+        return;
+    }
+
+    // Cancela qualquer busca automática pendente
+    if (timeoutID) {
+        clearTimeout(timeoutID);
+    }
+
+    // Executa a busca imediatamente
+    await buscarJogos(query);
+});
+
+
+inputJogo.addEventListener('input', handleInput);
+
+
+inputJogo.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); 
+        if (timeoutID) {
+            clearTimeout(timeoutID);
+        }
+        const query = this.value.trim();
+        if (query.length >= 3) {
+            buscarJogos(query);
+        }
+    }
 });
 
 
 function alternarTema() {
-    // Alterna a classe 'tema-claro' no body (que você já configurou no CSS)
+   
     const corpo = document.body;
     corpo.classList.toggle('tema-claro');
     
-    // Verifica se o tema claro ficou ativo após o clique
+    
     const ehTemaClaro = corpo.classList.contains('tema-claro');
     
-    // Salva a escolha do usuário no navegador
+    
     localStorage.setItem('temaPreferido', ehTemaClaro ? 'claro' : 'escuro');
 }
 
