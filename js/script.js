@@ -142,13 +142,19 @@ function alternarTema() {
 
 /////////////////////////////////////////////////////////////////////////////////
 
+// ============================================
+// VARIÁVEIS GLOBAIS
+// ============================================
+let filtroAtual = 'Mais avaliados';
 
-async function buscarPromocoes() {
+// ============================================
+// FUNÇÃO PARA BUSCAR PROMOÇÕES
+// ============================================
+async function buscarPromocoes(filtro = 'Mais avaliados') {
     const sectionPromocoes = document.querySelector('.promocoes');
     const containerPromocoes = sectionPromocoes.querySelector('.promocoes-container');
     
     if (!containerPromocoes) {
-        
         const novoContainer = document.createElement('div');
         novoContainer.className = 'promocoes-container';
         sectionPromocoes.appendChild(novoContainer);
@@ -157,12 +163,26 @@ async function buscarPromocoes() {
     const container = sectionPromocoes.querySelector('.promocoes-container');
     container.innerHTML = '<p class="loading">Carregando promoções...</p>';
 
+    // Define a URL base
+    let url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=25';
+
+    // Adiciona o filtro escolhido
+    switch(filtro) {
+        case 'Mais Descontos':
+            url += '&sortBy=Savings&desc=true';
+            break;
+        case 'Mais avaliados':
+            url += '&sortBy=DealRating&desc=true';
+            break;
+        case 'Lançamentos':
+            url += '&sortBy=Release&desc=true';
+            break;
+        default:
+            url += '&sortBy=Savings&desc=true';
+    }
+
     try {
-        // Busca os jogos com melhores descontos
-        // Usando o endpoint de deals da CheapShark
-        const response = await fetch(
-            'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=12&sortBy=DealRating&desc=true'
-        );
+        const response = await fetch(url);
         
         if (!response.ok) {
             throw new Error('Erro ao buscar promoções');
@@ -175,38 +195,30 @@ async function buscarPromocoes() {
             return;
         }
 
+        container.innerHTML = '';
 
-container.innerHTML = '';
-
-        // Cria os cards das promoções
         dados.forEach((deal, index) => {
-            // Calcula o desconto
             const desconto = Math.round((1 - (deal.salePrice / deal.normalPrice)) * 100);
             
-            // Formata a data
             const dataTimestamp = deal.lastChange * 1000;
             const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
             
-            // Cria o card
             const card = document.createElement('div');
             card.className = 'promocao-card';
             card.style.animationDelay = `${index * 0.05}s`;
 
-
-            //////////////////////////////////////////////////////
-            
+            // ========================================
+            // CORREÇÃO: Usar Steam Capsules
+            // ========================================
             const steamAppID = deal.steamAppID || deal.appID;
             let urlImagem;
             
             if (steamAppID) {
-                // Usa a imagem do Steam (capsule)
                 urlImagem = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${steamAppID}/capsule_231x87.jpg`;
             } else {
-                // Fallback: tenta usar a thumb da CheapShark
                 urlImagem = `https://www.cheapshark.com/img/deals/${deal.thumb}`;
             }
             
-            // Placeholder para caso a imagem não carregue
             const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="231" height="87" viewBox="0 0 231 87"%3E%3Crect width="231" height="87" fill="%2326315c"/%3E%3Ctext x="115.5" y="43.5" font-family="Arial" font-size="12" fill="%23c7c9cf" text-anchor="middle"%3ESem imagem%3C/text%3E%3C/svg%3E';
             
             card.innerHTML = `
@@ -243,25 +255,6 @@ container.innerHTML = '';
             });
             
             container.appendChild(card);
-
-
-
-
-            //////////////////////////////////////////////////////
-            
-            // Adiciona evento de clique para buscar detalhes do jogo
-            card.addEventListener('click', () => {
-                // Abre o jogo na pesquisa ou redireciona
-                const inputJogo = document.getElementById('inputJogo');
-                if (inputJogo) {
-                    inputJogo.value = deal.title;
-                    inputJogo.dispatchEvent(new Event('input'));
-                    // Scroll para a pesquisa
-                    inputJogo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-            
-            container.appendChild(card);
         });
 
     } catch (erro) {
@@ -269,17 +262,55 @@ container.innerHTML = '';
         container.innerHTML = `
             <p class="erro-promocoes">
                 Erro ao carregar promoções. Tente novamente mais tarde.
-                <button onclick="buscarPromocoes()" class="btn-recarregar">Tentar novamente</button>
+                <button onclick="buscarPromocoes('${filtroAtual}')" class="btn-recarregar">Tentar novamente</button>
             </p>
         `;
     }
 }
 
-
-        document.addEventListener('DOMContentLoaded', function() {
+// ============================================
+// FUNÇÃO PARA FILTRAR PROMOÇÕES
+// ============================================
+function filtrarPromocoes(filtro, event) {
+    // Atualiza o filtro atual
+    filtroAtual = filtro;
     
+    // Remove a classe ativa de todos os filtros
+    document.querySelectorAll('.promocoes-filtros span').forEach(el => {
+        el.className = 'filtro-inativo';
+    });
+    
+    // Adiciona a classe ativa ao filtro clicado
+    if (event && event.target) {
+        event.target.className = 'filtro-ativo';
+    } else {
+        // Se não tiver event (chamado programaticamente), procura pelo texto
+        document.querySelectorAll('.promocoes-filtros span').forEach(el => {
+            if (el.textContent === filtro) {
+                el.className = 'filtro-ativo';
+            }
+        });
+    }
+    
+    // Busca com o filtro escolhido
+    buscarPromocoes(filtro);
+}
+
+// ============================================
+// EXECUTA A BUSCA QUANDO A PÁGINA CARREGAR
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
     if (document.querySelector('.promocoes')) {
-        buscarPromocoes();
+        // Inicializa com "Mais Descontos" ativo
+        buscarPromocoes('Mais avaliados');
+        
+        // Adiciona eventos de clique aos filtros
+        document.querySelectorAll('.promocoes-filtros span').forEach(el => {
+            el.addEventListener('click', function(event) {
+                const filtro = this.textContent;
+                filtrarPromocoes(filtro, event);
+            });
+        });
     }
 });
 

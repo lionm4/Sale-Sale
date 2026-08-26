@@ -14,9 +14,9 @@
         <div class="promocoes-header">
             <h2>Promoções em Destaque</h2>
             <div class="promocoes-filtros">
-                <span class="filtro-ativo">Mais Descontos</span>
-                <span class="filtro-inativo">Melhor Rating</span>
+                <span class="filtro-ativo">Mais avaliados</span>
                 <span class="filtro-inativo">Lançamentos</span>
+                <span class="filtro-inativo">Mais Descontos</span>
             </div>
         </div>
         <div class="promocoes-container">
