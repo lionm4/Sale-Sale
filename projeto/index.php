@@ -8,11 +8,20 @@
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
-    <div id="resultado" style="margin: 20px; text-align: center;"></div>
+    <div id="resultado"></div>
 
     <section class="promocoes">
-        <h2>Promoções em Destaque</h2>
-        <p>Carregando promoções...</p>
+        <div class="promocoes-header">
+            <h2>Promoções em Destaque</h2>
+            <div class="promocoes-filtros">
+                <span class="filtro-ativo">Mais Descontos</span>
+                <span class="filtro-inativo">Melhor Rating</span>
+                <span class="filtro-inativo">Lançamentos</span>
+            </div>
+        </div>
+        <div class="promocoes-container">
+            <p>Carregando promoções...</p>
+        </div>
     </section>
 
 
