@@ -15,7 +15,7 @@
 </section>
 
 
-    <section class="secao-tcc">
+    <section class="SOBRE">
         
         <h3 class="exemplo">NOSSO GRUPO</h3>
         
@@ -26,7 +26,7 @@
             <p></p>
 
         <h3>Sobre o Projeto</h3>
-        <p>Somos da Ruy Rodriguez e estamos cursando curso técnico do terceiro ano do ensino médio, o site é totalmente feito por nós como nosso TCC.</p>
+        <p>Somos alunos do Terceiro ano do ensino médio, fazemos parte do curso técnico do Ruy e esse site é nosso projeto de TCC</p>
     </section>
 
 
