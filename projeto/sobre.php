@@ -27,6 +27,7 @@
 
         <h3>Sobre o Projeto</h3>
         <p>Somos alunos do Terceiro ano do ensino médio, fazemos parte do curso técnico do Ruy e esse site é nosso projeto de TCC</p>
+        <p>Fizemos o site com o objetivo de mostrar a parte de trás dos sites/aplicativos para as pessoas verem de pratica como que as APIS funcionam, pegamos um exemplo de sites que informam os preços</p>
     </section>
 
 
