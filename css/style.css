@@ -878,3 +878,66 @@ body.tema-claro .filtro-ativo {
 .promocoes-container::-webkit-scrollbar-thumb:hover {
     background: #3a5bd9;
 }
+.secao-tcc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    
+    /* Configuração do Quadrado/Card */
+    background-color: #2566d6;      
+    max-width: 800px;               
+    margin: 40px auto;             
+    padding: 40px;                  
+    border-radius: 12px;            
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
+
+    /* Garante que o texto herde as variáveis de cor criadas antes */
+    color: var(--cor-texto-principal); 
+}
+/* Garante que o primeiro título (NOSSO GRUPO) fique visível e centralizado */
+.secao-tcc h2 {
+    font-size: 2rem;
+    color: #54A9EB !important;       /* Força o azul claro do seu logo */
+    display: inline-block;           /* Permite alinhar a linha perfeitamente */
+    padding-bottom: 12px;            /* Espaço entre o texto e a linha */
+    border-bottom: 2px solid #2A6BB2; /* Linha com o azul médio do logo */
+    margin-bottom: 25px;             /* Espaço para afastar dos nomes abaixo */
+    width: 100%;                     /* Alinha a estrutura */
+    max-width: 300px;                /* Controla o tamanho da linha */
+}
+
+/* Garante que o segundo título (Sobre o Projeto) também apareça com a linha */
+.secao-tcc h3 {
+    font-size: 1.5rem;
+    color: #1329d3 !important;       /* Força o azul claro do seu logo */
+    display: inline-block;
+    margin-top: 40px;                /* Afasta o título dos nomes acima */
+    padding-bottom: 12px;            /* Espaço entre o texto e a linha */
+    border-bottom: 2px solid #2A6BB2; /* Linha divisória */
+    margin-bottom: 25px;             /* Espaço para afastar do texto descritivo */
+    width: 100%;
+    max-width: 300px;
+}
+.Ruy {
+    display: flex;
+    color:white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 10vh;
+    padding: 40px 20px;
+    box-sizing: border-box;
+
+    background-color: #202e5b ;
+    max-width: 300px;
+    margin: 1px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px #000000;
+}

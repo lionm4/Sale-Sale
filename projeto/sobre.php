@@ -10,25 +10,28 @@
     <?php include '../includes/header.php'; ?>
     <div id="resultado" style="margin: 20px; text-align: center;"></div>
 
-    <section class="Nós">
-        <h2>Pessoas do TCC</h2>
-        <p>EXEMPLO</p>
-        <p2> João Pedro Ferreira</p2>
-        <p></p>
+    <section class = "Ruy">
+    <p>RUY RODRIGUEZ</p>
+</section>
 
-        <p3> Pedro Henrique </p3>
-        <p></p>
-            
-        <p4> Ericky Gabriel </p4>
-        <p></p> 
 
-        <p5> Tiago Augusto </p5>
-        <p> </p>
+    <section class="secao-tcc">
+        
+        <h3 class="exemplo">NOSSO GRUPO</h3>
+        
+        <p>João Pedro Ferreira</p>
+        <p>Pedro Henrique</p>
+        <p>Ericky Gabriel</p>
+        <p>Tiago Augusto</p> 
+            <p></p>
+
         <h3>Sobre o Projeto</h3>
-        <p> </p>
-        <p>Somo
-
+        <p>Somos da Ruy Rodriguez e estamos cursando curso técnico do terceiro ano do ensino médio, o site é totalmente feito por nós como nosso TCC.</p>
     </section>
+
+
+
+
 
 
     <?php include '../includes/footer.php'; ?>
