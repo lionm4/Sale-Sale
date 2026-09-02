@@ -1,61 +1,95 @@
-/* Container pai que joga tudo para o canto direito da tela */
-/* TEMA ESCURO / PADRÃO (Azul Escuro) */
+/* ==========================================================================
+   1. CONFIGURAÇÃO DE TEMAS (VARIÁVEIS)
+   ========================================================================== */
+
+/* TEMA ESCURO / PADRÃO (Preto) */
 :root, body.tema-escuro {
-    --cor-fundo-quadrado: #000000;      /* O seu azul original */
-    --cor-texto-principal: #ffffff;     /* Texto branco para contrastar */
+    --cor-fundo-quadrado: #000000;      
+    --cor-texto-principal: #ffffff;     
     --cor-linha-divisoria: #143f6d;
 }
 
 /* TEMA CLARO (Branco) */
 body.tema-claro {
-    --cor-fundo-quadrado: #ffffff;      /* Quadrado fica branco */
-    --cor-texto-principal: #1a1a1a;     /* Texto fica escuro para poder ler */
-    --cor-linha-divisoria: #d1d1d1;     /* Linha divisória cinza claro */
+    --cor-fundo-quadrado: #ffffff;      
+    --cor-texto-principal: #1a1a1a;     
+    --cor-linha-divisoria: #d1d1d1;     
 }
 
+/* ==========================================================================
+   2. ESTRUTURA DO LAYOUT PRINCIPAL
+   ========================================================================== */
+
+/* Container que junta a grade da esquerda e o bloco da direita */
 .secao-layout-grupo {
     display: flex;
-    justify-content: flex-end; /* Empurra o quadrado para a direita */
+    justify-content: space-between;
+    align-items: stretch; /* CORRIGIDO: Força ambos os lados a terem a mesma altura vertical */
+    gap: 50px;           
     width: 100%;
-    max-width: 1400px; /* Alinhe com a largura máxima do seu site */
+    max-width: 1300px;   
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
     box-sizing: border-box;
 }
 
-/* O seu quadrado modificado para ficar menor */
+/* ==========================================================================
+   3. COLUNA DA ESQUERDA (GRADE DE FOTOS 2x2)
+   ========================================================================== */
+
+/* A estrutura métrica de 2x2 para os 4 quadrados */
+.grade-fotos-esquerda {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Divide em duas colunas idênticas */
+    gap: 20px;                             /* Espaço milimétrico igual entre eles */
+    flex: 1;
+    max-width: 550px;                      /* Impede que eles fiquem gigantes na tela */
+    width: 100%;
+}
+
+/* O estilo individual de cada um dos 4 quadrados */
+.quadrado-foto {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Força a ser um quadrado matemático perfeito (reto) */
+    background-color: var(--cor-fundo-quadrado); /* Segue a mudança dinâmica de tema */
+    border-radius: 12px;            
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
+    transition: background-color 0.3s ease;
+}
+
+/* ==========================================================================
+   4. COLUNA DA DIREITA (BLOCO DO GRUPO)
+   ========================================================================== */
+
+/* O seu quadrado modificado para esticar verticalmente */
 .quadrado-grupo-direita {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 60vh;
+    
+    height: auto; /* CORRIGIDO: Removido min-height antigo para permitir o esticamento perfeito */
     box-sizing: border-box;
     
-    /* MODIFICADO: Agora usa variável para mudar com o tema */
     background-color: var(--cor-fundo-quadrado);      
-    
     max-width: 500px; 
     width: 100%;             
     padding: 40px 25px; 
     border-radius: 12px;            
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
 
-    /* Também usa a variável para o texto mudar de cor se necessário */
     color: var(--cor-texto-principal); 
-    
-    /* Opcional: Adiciona uma transição suave ao trocar de cor */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Linha divisória interna baseada na cor do tema */
 .quadrado-grupo-direita .linha-divisoria {
     width: 70%;
     border: 0;
-    /* Usando variável na borda para mudar com o tema */
-    border-top: 2px solid var(--cor-linha-divisoria); 
+    border-top: 2px solid var(--cor-linha-divisoria); /* CORRIGIDO: Removida cor azul estática antiga */
     margin-bottom: 20px;
 }
-
 
 /* Estilos de texto internos */
 .quadrado-grupo-direita .titulo-secao {
@@ -64,13 +98,6 @@ body.tema-claro {
     text-transform: uppercase;
     margin-bottom: 5px;
     letter-spacing: 1px;
-}
-
-.quadrado-grupo-direita .linha-divisoria {
-    width: 70%;
-    border: 0;
-    border-top: 2px solid #0056b3; 
-    margin-bottom: 20px;
 }
 
 .quadrado-grupo-direita .lista-integrantes p {
@@ -87,38 +114,4 @@ body.tema-claro {
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 12px;
-}
-/* Container que joga a grade para a esquerda e o grupo para a direita */
-.secao-layout-grupo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Alinha os centros verticalmente */
-    gap: 50px;           /* Distância entre os blocos da esquerda e direita */
-    width: 100%;
-    max-width: 1300px;   
-    margin: 0 auto;
-    padding: 40px 20px;
-    box-sizing: border-box;
-}
-
-/* A estrutura métrica de 2x2 para os 4 quadrados */
-.grade-fotos-esquerda {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Divide em duas colunas idênticas */
-    gap: 20px;                             /* Espaço milimétrico igual entre eles */
-    flex: 1;
-    max-width: 550px;                      /* Impede que eles fiquem gigantes na tela */
-    width: 100%;
-}
-
-/* O estilo individual de cada um dos 4 quadrados */
-.quadrado-foto {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Força a ser um quadrado matemático perfeito (reto) */
-    
-    background-color: var(--cor-fundo-quadrado); /* Segue a mudança dinâmica de tema */
-    border-radius: 12px;            
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
-    
-    transition: background-color 0.3s ease;
 }
