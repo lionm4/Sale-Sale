@@ -17,15 +17,26 @@
     <!-- CONTAINER PRINCIPAL -->
     <div class="secao-layout-grupo">
         
-        <!-- COLOQUEI AS 4 FOTOS AQUI (ELAS VÃO PARA A ESQUERDA) -->
+        <!-- GRADE DE FOTOS NA ESQUERDA -->
         <div class="grade-fotos-esquerda">
-            <div class="quadrado-foto"></div>
-            <div class="quadrado-foto"></div>
-            <div class="quadrado-foto"></div>
-            <div class="quadrado-foto"></div>
-        </div>
+            <div class="quadrado-foto">
+                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+            </div>
+
+            <div class="quadrado-foto">
+                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+            </div>
+
+            <div class="quadrado-foto">
+                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+            </div>
+                
+            <div class="quadrado-foto">
+                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+            </div>
+        </div> <!-- Fechamento correto da grade -->
         
-        <!-- O seu quadrado da direita (Mantido exatamente igual) -->
+        <!-- BLOCO DA DIREITA -->
         <div class="quadrado-grupo-direita">
             <h2 class="titulo-secao">NOSSO GRUPO</h2>
             <hr class="linha-divisoria">

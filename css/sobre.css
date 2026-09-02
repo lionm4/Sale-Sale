@@ -20,16 +20,15 @@ body.tema-claro {
    2. ESTRUTURA DO LAYOUT PRINCIPAL
    ========================================================================== */
 
-/* Container que junta a grade da esquerda e o bloco da direita */
 .secao-layout-grupo {
     display: flex;
     justify-content: space-between;
-    align-items: stretch; /* CORRIGIDO: Força ambos os lados a terem a mesma altura vertical */
+    align-items: stretch; /* Garante mesma altura vertical em ambos os lados */
     gap: 50px;           
     width: 100%;
-    max-width: 1300px;   
-    margin: 0 auto;
-    padding: 40px 20px;
+    max-width: 1200px;   
+    margin: 40px auto;
+    padding: 0 20px;
     box-sizing: border-box;
 }
 
@@ -37,31 +36,39 @@ body.tema-claro {
    3. COLUNA DA ESQUERDA (GRADE DE FOTOS 2x2)
    ========================================================================== */
 
-/* A estrutura métrica de 2x2 para os 4 quadrados */
 .grade-fotos-esquerda {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Divide em duas colunas idênticas */
-    gap: 20px;                             /* Espaço milimétrico igual entre eles */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;                             
     flex: 1;
-    max-width: 550px;                      /* Impede que eles fiquem gigantes na tela */
+    max-width: 500px;                     
     width: 100%;
 }
 
-/* O estilo individual de cada um dos 4 quadrados */
 .quadrado-foto {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Força a ser um quadrado matemático perfeito (reto) */
-    background-color: var(--cor-fundo-quadrado); /* Segue a mudança dinâmica de tema */
+    aspect-ratio: 1 / 1; 
+    background-color: var(--cor-fundo-quadrado); 
     border-radius: 12px;            
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
     transition: background-color 0.3s ease;
+    overflow: hidden; /* Corta a imagem para respeitar o border-radius */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Controla a imagem interna para preencher o quadrado perfeitamente */
+.quadrado-foto .imagem-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a sacola verde se adaptar sem achatar */
 }
 
 /* ==========================================================================
    4. COLUNA DA DIREITA (BLOCO DO GRUPO)
    ========================================================================== */
 
-/* O seu quadrado modificado para esticar verticalmente */
 .quadrado-grupo-direita {
     display: flex;
     flex-direction: column;
@@ -69,7 +76,7 @@ body.tema-claro {
     align-items: center;
     text-align: center;
     
-    height: auto; /* CORRIGIDO: Removido min-height antigo para permitir o esticamento perfeito */
+    height: auto; 
     box-sizing: border-box;
     
     background-color: var(--cor-fundo-quadrado);      
@@ -83,15 +90,13 @@ body.tema-claro {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Linha divisória interna baseada na cor do tema */
 .quadrado-grupo-direita .linha-divisoria {
     width: 70%;
     border: 0;
-    border-top: 2px solid var(--cor-linha-divisoria); /* CORRIGIDO: Removida cor azul estática antiga */
+    border-top: 2px solid var(--cor-linha-divisoria); 
     margin-bottom: 20px;
 }
 
-/* Estilos de texto internos */
 .quadrado-grupo-direita .titulo-secao {
     font-size: 22px;
     font-weight: bold;
