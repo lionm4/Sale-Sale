@@ -7,8 +7,8 @@
             <nav class="menu">
                 <a href="index.php">Homepage</a>
                 <a href="news.php">News</a>
-                <a href="compare.php">Compare</a>
-                <a href="sobre.php">Sobre nós</a>
+                <a href="compare.php">Sobre Nós</a>
+              
             </nav>
 
             <form id="formBusca" class="search-form">

@@ -895,6 +895,8 @@ body.tema-claro .filtro-ativo {
     color: var(--cor-texto-principal); 
 }
 
+
+
 .SOBRE h2 {
     font-size: 2rem;
     color: #54A9EB !important;      
@@ -942,9 +944,7 @@ body.tema-claro .filtro-ativo {
 
 
 
-/* ========================================================
-   CONFIGURAÇÃO DOS TEMAS (VARIÁVEIS DO QUADRADO)
-   ======================================================== */
+
    :root {
     --cor-fundo-quadrado: #0b111e;     
     --cor-titulos: #54A9EB;            
@@ -959,9 +959,7 @@ body.tema-claro {
     --cor-linha-divisoria: #54A9EB !important;    
 }
 
-/* ========================================================
-   ESTILIZAÇÃO DO QUADRADO DO CONTEÚDO (.SOBRE) - PARA A DIREITA
-   ======================================================== */
+
 .SOBRE {
     display: flex;
     flex-direction: column;
@@ -974,18 +972,18 @@ body.tema-claro {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
-    /* Cores dinâmicas que funcionam com o tema */
+ 
     background-color: var(--cor-fundo-quadrado) !important;
     color: var(--cor-texto-nomes) !important; 
     
-    /* Transição suave ao trocar de tema */
+  
     transition: background-color 0.3s ease, color 0.3s ease; 
 
-    /* ====== MOVE O BLOCO PARA A DIREITA ====== */
+
     margin: 40px 5% 40px auto !important; 
 }
 
-/* Título "NOSSO GRUPO" */
+
 .SOBRE h2 {
     font-size: 2rem;
     color: var(--cor-titulos) !important;
@@ -998,7 +996,7 @@ body.tema-claro {
     transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Título "Sobre o Projeto" */
+
 .SOBRE h3 {
     font-size: 1.5rem;
     color: var(--cor-titulos) !important;
@@ -1012,7 +1010,7 @@ body.tema-claro {
     transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Parágrafos com os nomes e textos */
+
 .SOBRE p {
     color: var(--cor-texto-nomes) !important;
     margin-bottom: 8px;
@@ -1020,9 +1018,7 @@ body.tema-claro {
     transition: color 0.3s ease;
 }
 
-/* ========================================================
-   ESTILIZAÇÃO DO QUADRADO RUY RODRIGUEZ
-   ======================================================== */
+
 .Ruy {
     display: flex;
     flex-direction: column;
@@ -1032,7 +1028,7 @@ body.tema-claro {
     min-height: 10vh;
     box-sizing: border-box;
     max-width: 300px;
-    margin: 20px auto; /* Mantém o Ruy centralizado no meio da página */
+    margin: 20px auto; 
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
@@ -1041,4 +1037,6 @@ body.tema-claro {
     color: var(--cor-texto-nomes) !important;
    
     transition: background-color 0.3s ease, color 0.3s ease;
+    
 }
+
