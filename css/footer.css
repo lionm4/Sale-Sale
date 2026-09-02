@@ -1,0 +1,13 @@
+/* footer */
+
+footer {
+    background-color: var(--azul-escuro);
+    padding: 16px 24px;
+    text-align: center;
+    margin-top: 40px;
+}
+ 
+.rodape p {
+    color: var(--cinza-claro);
+    font-size: 13px;
+}
