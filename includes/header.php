@@ -40,12 +40,5 @@
         </div>
 </header> 
 
-<script>
-        (function() {
-            const temaSalvo = localStorage.getItem('temaPreferido');
-            if (temaSalvo === 'claro') {
-                document.body.classList.add('tema-claro');
-            }
-        })();
-</script>
+
 
