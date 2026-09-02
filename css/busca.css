@@ -1,0 +1,91 @@
+/* busca estilizado steam */
+
+#resultado {
+    max-width: 900px;
+    margin: 8px 450px 8px auto !important;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: var(--cinza-claro);
+    font-size: 12px;
+    text-align: right !important;
+    min-height: 20px;
+}
+
+#resultado > div {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    cursor: pointer;
+    text-align: left;
+    max-width: 100%;
+}
+
+#resultado > div:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--azul-destaque);
+    transform: translateX(3px);
+}
+
+#resultado > div img {
+    width: 50px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+#resultado > div h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--branco);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+#resultado > div p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--cinza-claro);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#resultado > div p strong {
+    color: #48bb78;
+    font-weight: 600;
+}
+
+/* mensagens da busca */
+#resultado:empty::before {
+    content: "";
+}
+
+#resultado:contains("Buscando"),
+#resultado:contains("Digite pelo menos"),
+#resultado:contains("Nenhum jogo"),
+#resultado:contains("Por favor") {
+    font-size: 13px;
+    padding: 8px 0;
+    color: var(--cinza-claro);
+}
+
+/* animação de loading */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#resultado:has(> :contains("Buscando")) {
+    animation: pulse 1.5s ease-in-out infinite;
+}
