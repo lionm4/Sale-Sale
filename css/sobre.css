@@ -52,22 +52,19 @@ body.tema-claro {
     border-radius: 12px;            
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
     transition: background-color 0.3s ease;
-    overflow: hidden; /* Corta a imagem para respeitar o border-radius */
+    overflow: hidden; 
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Controla a imagem interna para preencher o quadrado perfeitamente */
 .quadrado-foto .imagem-foto {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Faz a sacola verde se adaptar sem achatar */
+    object-fit: cover; 
 }
 
-/* ==========================================================================
-   4. COLUNA DA DIREITA (BLOCO DO GRUPO)
-   ========================================================================== */
+
 
 .quadrado-grupo-direita {
     display: flex;
@@ -119,4 +116,22 @@ body.tema-claro {
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 12px;
+}
+
+   .Ruy {
+    text-align: center;
+
+}
+
+.Ruy p {
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    
+
+    color: var(--cor-texto-principal); 
+    
+   
+    transition: color 0.3s ease; 
 }

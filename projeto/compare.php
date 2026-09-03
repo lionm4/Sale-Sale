@@ -11,32 +11,32 @@
     <div id="resultado" style="margin: 20px; text-align: center;"></div>
 
     <section class="Ruy">
-        <p>RUY RODRIGUEZ</p>
+        <p>RUY RODRIGUEZ T.I</p>
     </section>
 
-    <!-- CONTAINER PRINCIPAL -->
+  
     <div class="secao-layout-grupo">
         
-        <!-- GRADE DE FOTOS NA ESQUERDA -->
+      
         <div class="grade-fotos-esquerda">
             <div class="quadrado-foto">
-                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+                <img src="../assets/images/WhatsApp Image 2026-09-02 at 18.48.08.jpeg" alt="TIAGO" class="imagem-foto">
             </div>
 
             <div class="quadrado-foto">
-                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+                <img src="../assets/images/WhatsApp Image 2026-09-03 at 16.50.17.jpeg" alt="João" class="imagem-foto">
             </div>
 
             <div class="quadrado-foto">
-                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+                <img src="../assets/images/WhatsApp Image 2026-09-03 at 17.01.16.jpeg" alt="Pedro" class="imagem-foto">
             </div>
                 
             <div class="quadrado-foto">
-                <img src="../assets/images/xbox_store.png" alt="Xbox Store" class="imagem-foto">
+                <img src="../assets/images/WhatsApp Image 2026-09-03 at 17.07.13.jpeg" alt="Ericky" class="imagem-foto">
             </div>
-        </div> <!-- Fechamento correto da grade -->
+        </div>
         
-        <!-- BLOCO DA DIREITA -->
+        
         <div class="quadrado-grupo-direita">
             <h2 class="titulo-secao">NOSSO GRUPO</h2>
             <hr class="linha-divisoria">
