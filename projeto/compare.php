@@ -42,10 +42,10 @@
             <hr class="linha-divisoria">
             
             <div class="lista-integrantes">
+                <p>Tiago Augusto</p>
                 <p>João Pedro Ferreira</p>
                 <p>Pedro Henrique</p>
                 <p>Ericky Gabriel</p>
-                <p>Tiago Augusto</p>
             </div>
 
             <h2 class="titulo-secao">SOBRE O PROJETO</h2>
