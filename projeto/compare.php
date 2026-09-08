@@ -53,7 +53,9 @@
             
             <div class="texto-projeto">
                 <p>Somos alunos do Terceiro ano do ensino médio, fazemos parte do curso técnico do Ruy e esse site é nosso projeto de TCC</p>
-                <p>Fizemos o site com o objetivo de mostrar a parte de trás dos sites/aplicativos para as pessoas verem do...</p>
+                <p>Além do objetivo de testar API’s, também procuramos adotar práticas que agregam positivamente ao mercado de trabalho no desenvolvimento de sites públicos e independentes. Utilizar métodos simples e eficientes é essencial para que o projeto atenda às expectativas dos usuários modernos. </p>
+                <p>O objetivo exploratório consiste em compreender a utilidade das API’s públicas. O objetivo descritivo é aplicar a simplicidade no desenvolvimento do projeto. Já o objetivo explicativo busca analisar possíveis falhas e limitações em um sistema simples, visando aprendizado e melhoria contínua. </p>
+                
             </div>
         </div>
 
