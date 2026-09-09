@@ -3,7 +3,7 @@ let filtroAtual = 'Mais avaliados';
 export async function buscarPromocoes(filtro = 'Mais avaliados') {
     const sectionPromocoes = document.querySelector('.promocoes');
     let container = sectionPromocoes.querySelector('.promocoes-container');
-    
+
     if (!container) {
         const novoContainer = document.createElement('div');
         novoContainer.className = 'promocoes-container';
@@ -15,7 +15,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     let url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=25';
 
-    switch(filtro) {
+    switch (filtro) {
         case 'Mais Descontos':
             url += '&sortBy=Savings&desc=true';
             break;
@@ -31,7 +31,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     try {
         const response = await fetch(url);
-        
+
         if (!response.ok) {
             throw new Error('Erro ao buscar promoções');
         }
@@ -47,25 +47,25 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
         dados.forEach((deal, index) => {
             const desconto = Math.round((1 - (deal.salePrice / deal.normalPrice)) * 100);
-            
+
             const dataTimestamp = deal.lastChange * 1000;
             const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
-            
+
             const card = document.createElement('div');
             card.className = 'promocao-card';
             card.style.animationDelay = `${index * 0.05}s`;
 
             const steamAppID = deal.steamAppID || deal.appID;
             let urlImagem;
-            
+
             if (steamAppID) {
                 urlImagem = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${steamAppID}/capsule_231x87.jpg`;
             } else {
                 urlImagem = `https://www.cheapshark.com/img/deals/${deal.thumb}`;
             }
-            
+
             const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="231" height="87" viewBox="0 0 231 87"%3E%3Crect width="231" height="87" fill="%2326315c"/%3E%3Ctext x="115.5" y="43.5" font-family="Arial" font-size="12" fill="%23c7c9cf" text-anchor="middle"%3ESem imagem%3C/text%3E%3C/svg%3E';
-            
+
             card.innerHTML = `
                 <div class="promocao-imagem">
                     <img 
@@ -89,16 +89,23 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
                     </div>
                 </div>
             `;
-            
+
             card.addEventListener('click', () => {
-                const inputJogo = document.getElementById('inputJogo');
-                if (inputJogo) {
-                    inputJogo.value = deal.title;
-                    inputJogo.dispatchEvent(new Event('input'));
-                    inputJogo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (deal.gameID) {
+                    console.log('Redirecionando para ID:', deal.gameID); // ← Debug
+                    window.location.href = `pagina-jogos.php?id=${deal.gameID}`;
+                } else {
+                    console.error('gameID não encontrado para:', deal.title);
+                    // Fallback: tenta buscar pelo título
+                    const inputJogo = document.getElementById('inputJogo');
+                    if (inputJogo) {
+                        inputJogo.value = deal.title;
+                        inputJogo.dispatchEvent(new Event('input'));
+                        inputJogo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             });
-            
+
             container.appendChild(card);
         });
 
@@ -115,11 +122,11 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
 export function filtrarPromocoes(filtro, event) {
     filtroAtual = filtro;
-    
+
     document.querySelectorAll('.promocoes-filtros span').forEach(el => {
         el.className = 'filtro-inativo';
     });
-    
+
     if (event && event.target) {
         event.target.className = 'filtro-ativo';
     } else {
@@ -129,16 +136,16 @@ export function filtrarPromocoes(filtro, event) {
             }
         });
     }
-    
+
     buscarPromocoes(filtro);
 }
 
 export function initPromocoes() {
     if (document.querySelector('.promocoes')) {
         buscarPromocoes('Mais avaliados');
-        
+
         document.querySelectorAll('.promocoes-filtros span').forEach(el => {
-            el.addEventListener('click', function(event) {
+            el.addEventListener('click', function (event) {
                 const filtro = this.textContent;
                 filtrarPromocoes(filtro, event);
             });
