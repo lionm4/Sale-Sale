@@ -26,28 +26,48 @@ export async function buscarJogos(query) {
         }
 
         const primeirosJogos = dadosBusca.slice(0, 5);
+
         const promessasDetalhes = primeirosJogos.map(jogo => 
-            fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`).then(res => res.json())
+            fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`)
+                .then(res => res.json())
+                .then(detalhes => ({
+                    ...detalhes,
+                    gameID: jogo.gameID  // ← Adiciona o gameID original
+                }))
         );
 
-        const listaDetalhes = await Promise.all(promessasDetalhes);
+      const listaDetalhes = await Promise.all(promessasDetalhes);
         divResultado.innerHTML = "";
 
         listaDetalhes.forEach(dadosDetalhes => {
             const nomeDoJogo = dadosDetalhes.info.title;
             const urlImagem = dadosDetalhes.info.thumb;
             const menorPreco = dadosDetalhes.cheapestPriceEver.price;
+            const gameID = dadosDetalhes.gameID; // ← Agora funciona!
             
             const dataTimestamp = dadosDetalhes.cheapestPriceEver.date * 1000;
             const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
 
-            divResultado.innerHTML += `
-                <div>
-                    <img src="${urlImagem}" alt="Capa do jogo ${nomeDoJogo}">
-                    <h3>${nomeDoJogo}</h3>
-                    <p>Menor preço histórico: <strong>$${menorPreco}</strong> em ${dataFormatada}.</p>
-                </div>
+            // Cria o elemento
+            const resultadoDiv = document.createElement('div');
+            resultadoDiv.innerHTML = `
+                <img src="${urlImagem}" alt="Capa do jogo ${nomeDoJogo}">
+                <h3>${nomeDoJogo}</h3>
+                <p>Menor preço histórico: <strong>$${menorPreco}</strong> em ${dataFormatada}.</p>
             `;
+            
+            // Adiciona o evento de clique
+            resultadoDiv.addEventListener('click', () => {
+                if (gameID) {
+                    console.log('Redirecionando para ID:', gameID);
+                    window.location.href = `pagina-jogos.php?id=${gameID}`;
+                } else {
+                    console.error('gameID não encontrado para:', nomeDoJogo);
+                }
+            });
+            
+            resultadoDiv.style.cursor = 'pointer';
+            divResultado.appendChild(resultadoDiv);
         });
 
     } catch (erro) {

@@ -34,20 +34,33 @@
         // 2. BUSCA NA API
         // ============================================
         $url = "https://www.cheapshark.com/api/1.0/games?id=" . urlencode($gameID);
-        $response = @file_get_contents($url);
-        
-        if ($response === false) {
-            echo '<div style="text-align: center; padding: 60px 20px;">';
-            echo '  <h2 style="color: white; font-size: 28px;">❌ Erro na requisição</h2>';
-            echo '  <p style="color: #a0aec0; font-size: 16px;">Não foi possível acessar a API.</p>';
-            echo '  <p style="color: #a0aec0; font-size: 14px;">ID: ' . $gameID . '</p>';
-            echo '  <a href="index.php" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #4d6fff; color: white; text-decoration: none; border-radius: 8px;">';
-            echo '    ← Voltar para a página inicial';
-            echo '  </a>';
-            echo '</div>';
-            include '../includes/footer.php';
-            exit;
-        }
+
+// Usa cURL em vez de file_get_contents
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Ignora verificação SSL (só para dev)
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Sale-Sale/1.0'); // User-Agent
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+    if ($response === false || $httpCode !== 200) {
+        echo '<div style="text-align: center; padding: 60px 20px;">';
+        echo '  <h2 style="color: white; font-size: 28px;">❌ Erro na requisição</h2>';
+        echo '  <p style="color: #a0aec0; font-size: 16px;">Não foi possível acessar a API.</p>';
+        echo '  <p style="color: #a0aec0; font-size: 14px;">ID: ' . $gameID . '</p>';
+        echo '  <p style="color: #a0aec0; font-size: 14px;">HTTP Code: ' . $httpCode . '</p>';
+        echo '  <a href="index.php" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #4d6fff; color: white; text-decoration: none; border-radius: 8px;">';
+        echo '    ← Voltar para a página inicial';
+        echo '  </a>';
+        echo '</div>';
+        include '../includes/footer.php';
+        exit;
+}
         
         $dados = json_decode($response, true);
         
