@@ -1,4 +1,31 @@
 let filtroAtual = 'Mais avaliados';
+const cacheDetalhes = new Map();
+const CACHE_TTL = 5 * 60 * 1000;
+
+async function buscarDetalhesComCache(gameID) {
+        const agora = Date.now();
+    if (cacheDetalhes.has(gameID)) {
+        const { dados, timestamp } = cacheDetalhes.get(gameID);
+        if (agora - timestamp < CACHE_TTL) {
+            console.log(`Cache hit para gameID ${gameID}`);
+            return dados;
+        }
+
+        cacheDetalhes.delete(gameID);
+    }
+
+    console.log(`Buscando detalhes do gameID ${gameID}`);
+    const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${gameID}`);
+    const dados = await res.json();
+
+    cacheDetalhes.set(gameID, { dados, timestamp: agora });
+
+    return dados;
+
+}
+
+
+
 
 export async function buscarPromocoes(filtro = 'Mais avaliados') {
     const sectionPromocoes = document.querySelector('.promocoes');
@@ -13,7 +40,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     container.innerHTML = '<p class="loading">Carregando promoções...</p>';
 
-    let url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=25';
+    let url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=15';
 
     switch (filtro) {
         case 'Mais Descontos':
@@ -43,9 +70,47 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
             return;
         }
 
+        container.innerHTML = '<p class="loading">Filtrando jogos multiplataforma...</p>';
+
+        const promessasLojas = dados.map(deal => 
+            buscarDetalhesComCache(deal.gameID)
+                .then(detalhes => {
+                    const numLojas = detalhes.deals ? detalhes.deals.length : 0;
+                    return {
+                        ...deal,
+                        numLojas: numLojas,
+                        deals: detalhes.deals || []
+                    };
+                })
+                .catch(erro => {
+                    console.error(`Erro ao buscar detalhes do gameID ${deal.gameID}:`, erro);
+                    return { ...deal, numLojas: 0, deals: [] };
+                })
+        );
+
+        const dealsComLojas = await Promise.all(promessasLojas);
+        
+        // Filtra apenas jogos com 2 ou mais lojas
+        const dealsFiltrados = dealsComLojas.filter(deal => deal.numLojas >= 2);
+
+        // Se não tiver nenhum, mostra mensagem
+        if (dealsFiltrados.length === 0) {
+            container.innerHTML = `
+                <p class="sem-promocoes">
+                    Nenhum jogo multiplataforma encontrado nesta categoria.
+                    <br>
+                    <small>Tente outro filtro.</small>
+                </p>
+            `;
+            return;
+        }
+
+        // ============================================
+        // RENDERIZA OS CARDS
+        // ============================================
         container.innerHTML = '';
 
-        dados.forEach((deal, index) => {
+        dealsFiltrados.forEach((deal, index) => {
             const desconto = Math.round((1 - (deal.salePrice / deal.normalPrice)) * 100);
 
             const dataTimestamp = deal.lastChange * 1000;
@@ -76,6 +141,9 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
                         style="width: 100%; height: 100%; object-fit: cover;"
                     >
                     <span class="promocao-desconto">-${desconto}%</span>
+                    <span class="promocao-lojas-badge" title="Disponível em ${deal.numLojas} lojas">
+                        🏪 ${deal.numLojas}
+                    </span>
                 </div>
                 <div class="promocao-info">
                     <h3 class="promocao-titulo">${deal.title}</h3>
@@ -92,17 +160,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
             card.addEventListener('click', () => {
                 if (deal.gameID) {
-                    console.log('Redirecionando para ID:', deal.gameID); // ← Debug
                     window.location.href = `pagina-jogos.php?id=${deal.gameID}`;
-                } else {
-                    console.error('gameID não encontrado para:', deal.title);
-                    // Fallback: tenta buscar pelo título
-                    const inputJogo = document.getElementById('inputJogo');
-                    if (inputJogo) {
-                        inputJogo.value = deal.title;
-                        inputJogo.dispatchEvent(new Event('input'));
-                        inputJogo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
                 }
             });
 
@@ -111,7 +169,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     } catch (erro) {
         console.error('Erro ao buscar promoções:', erro);
-        container.innerHTML = `
+        container.innerHTML = ` 
             <p class="erro-promocoes">
                 Erro ao carregar promoções. Tente novamente mais tarde.
                 <button onclick="buscarPromocoes('${filtroAtual}')" class="btn-recarregar">Tentar novamente</button>

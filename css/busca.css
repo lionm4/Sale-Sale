@@ -41,6 +41,22 @@
     flex-shrink: 0;
 }
 
+.badge-lojas {
+    background: rgba(77, 111, 255, 0.8);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#resultado > div:hover .badge-lojas {
+    background: var(--azul-destaque);
+}
+
 #resultado > div h3 {
     margin: 0;
     font-size: 13px;

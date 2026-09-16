@@ -30,39 +30,71 @@ export async function buscarJogos(query) {
         const promessasDetalhes = primeirosJogos.map(jogo => 
             fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`)
                 .then(res => res.json())
-                .then(detalhes => ({
-                    ...detalhes,
-                    gameID: jogo.gameID  // ← Adiciona o gameID original
-                }))
+                .then(detalhes => {
+                    const deals = detalhes.deals || [];
+                    
+                    // Conta TODAS as lojas disponíveis
+                    const numLojas = deals.length;
+                    
+                    // Conta lojas COM promoção ativa (savings > 0)
+                    const numLojasComPromocao = deals.filter(d => 
+                        parseFloat(d.savings) > 0
+                    ).length;
+                    
+                    return {
+                        ...detalhes,
+                        gameID: jogo.gameID,
+                        numLojas: numLojas,
+                        numLojasComPromocao: numLojasComPromocao
+                    };
+                })
         );
 
       const listaDetalhes = await Promise.all(promessasDetalhes);
+
+
+
+        const jogosFiltrados = listaDetalhes.filter(dados => 
+            dados.numLojas >= 2 && dados.numLojasComPromocao >= 1
+        );
+
+        // Se nenhum jogo passou no filtro
+        if (jogosFiltrados.length === 0) {
+            divResultado.innerHTML = "Nenhum jogo multiplataforma encontrado com promoção ativa.";
+            return;
+        }
+
+        // ============================================
+        // ETAPA 4: Renderiza os cards
+        // ============================================
         divResultado.innerHTML = "";
 
-        listaDetalhes.forEach(dadosDetalhes => {
+        jogosFiltrados.forEach(dadosDetalhes => {
             const nomeDoJogo = dadosDetalhes.info.title;
             const urlImagem = dadosDetalhes.info.thumb;
             const menorPreco = dadosDetalhes.cheapestPriceEver.price;
-            const gameID = dadosDetalhes.gameID; // ← Agora funciona!
+            const gameID = dadosDetalhes.gameID;
+            const numLojas = dadosDetalhes.numLojas;
+            const numLojasComPromocao = dadosDetalhes.numLojasComPromocao;
             
             const dataTimestamp = dadosDetalhes.cheapestPriceEver.date * 1000;
             const dataFormatada = new Date(dataTimestamp).toLocaleDateString('pt-BR');
 
-            // Cria o elemento
+            // Cria o card usando createElement (permite addEventListener)
             const resultadoDiv = document.createElement('div');
             resultadoDiv.innerHTML = `
                 <img src="${urlImagem}" alt="Capa do jogo ${nomeDoJogo}">
                 <h3>${nomeDoJogo}</h3>
                 <p>Menor preço histórico: <strong>$${menorPreco}</strong> em ${dataFormatada}.</p>
+                <span class="badge-lojas">
+                    🏪 ${numLojas} lojas • 🔥 ${numLojasComPromocao} em promoção
+                </span>
             `;
             
-            // Adiciona o evento de clique
+            // Redireciona para a página de detalhes
             resultadoDiv.addEventListener('click', () => {
                 if (gameID) {
-                    console.log('Redirecionando para ID:', gameID);
                     window.location.href = `pagina-jogos.php?id=${gameID}`;
-                } else {
-                    console.error('gameID não encontrado para:', nomeDoJogo);
                 }
             });
             
