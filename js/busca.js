@@ -106,7 +106,7 @@ export async function buscarJogos(query) {
         console.error("Erro na requisição:", erro);
         divResultado.innerHTML = "Ocorreu um erro ao buscar os dados da API.";
     }
-}
+}   
 
 export function handleInput(event) {
     const query = event.target.value.trim();

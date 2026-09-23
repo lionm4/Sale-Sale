@@ -1,9 +1,11 @@
 let filtroAtual = 'Mais avaliados';
 const cacheDetalhes = new Map();
 const CACHE_TTL = 5 * 60 * 1000;
+const LOJAS_PERMITIDAS = ['1', '25', '27', '29'];
 
 async function buscarDetalhesComCache(gameID) {
         const agora = Date.now();
+
     if (cacheDetalhes.has(gameID)) {
         const { dados, timestamp } = cacheDetalhes.get(gameID);
         if (agora - timestamp < CACHE_TTL) {
@@ -72,26 +74,43 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
         container.innerHTML = '<p class="loading">Filtrando jogos multiplataforma...</p>';
 
+
         const promessasLojas = dados.map(deal => 
             buscarDetalhesComCache(deal.gameID)
                 .then(detalhes => {
-                    const numLojas = detalhes.deals ? detalhes.deals.length : 0;
+                    const deals = detalhes.deals || [];
+                    
+                    // Filtra apenas as 4 lojas permitidas
+                    const dealsFiltrados = deals.filter(d => 
+                        LOJAS_PERMITIDAS.includes(String(d.storeID))
+                    );
+                    
+                    // Conta quantas lojas permitidas têm o jogo
+                    const numLojas = dealsFiltrados.length;
+                    
+                    // Conta quantas dessas estão em promoção (savings > 0)
+                    const numLojasComPromocao = dealsFiltrados.filter(d => 
+                        parseFloat(d.savings) > 0
+                    ).length;
+                    
                     return {
                         ...deal,
                         numLojas: numLojas,
-                        deals: detalhes.deals || []
+                        numLojasComPromocao: numLojasComPromocao
                     };
                 })
                 .catch(erro => {
-                    console.error(`Erro ao buscar detalhes do gameID ${deal.gameID}:`, erro);
-                    return { ...deal, numLojas: 0, deals: [] };
+                    console.error(`Erro no gameID ${deal.gameID}:`, erro);
+                    return { ...deal, numLojas: 0, numLojasComPromocao: 0 };
                 })
         );
 
         const dealsComLojas = await Promise.all(promessasLojas);
         
         // Filtra apenas jogos com 2 ou mais lojas
-        const dealsFiltrados = dealsComLojas.filter(deal => deal.numLojas >= 2);
+        const dealsFiltrados = dealsComLojas.filter(deal => 
+            deal.numLojas >= 2 && deal.numLojasComPromocao >= 1
+        );
 
         // Se não tiver nenhum, mostra mensagem
         if (dealsFiltrados.length === 0) {
@@ -131,6 +150,8 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
             const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="231" height="87" viewBox="0 0 231 87"%3E%3Crect width="231" height="87" fill="%2326315c"/%3E%3Ctext x="115.5" y="43.5" font-family="Arial" font-size="12" fill="%23c7c9cf" text-anchor="middle"%3ESem imagem%3C/text%3E%3C/svg%3E';
 
+            const textoLojas = `🏪 ${deal.numLojas} lojas • 🔥 ${deal.numLojasComPromocao} em promoção`;
+
             card.innerHTML = `
                 <div class="promocao-imagem">
                     <img 
@@ -141,9 +162,6 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
                         style="width: 100%; height: 100%; object-fit: cover;"
                     >
                     <span class="promocao-desconto">-${desconto}%</span>
-                    <span class="promocao-lojas-badge" title="Disponível em ${deal.numLojas} lojas">
-                        🏪 ${deal.numLojas}
-                    </span>
                 </div>
                 <div class="promocao-info">
                     <h3 class="promocao-titulo">${deal.title}</h3>
@@ -154,6 +172,9 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
                     <div class="promocao-meta">
                         <span class="promocao-rating">⭐ ${deal.dealRating || 'N/A'}</span>
                         <span class="promocao-data">${dataFormatada}</span>
+                    </div>
+                    <div class="promocao-lojas-badge">
+                        ${textoLojas}
                     </div>
                 </div>
             `;
@@ -169,7 +190,7 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     } catch (erro) {
         console.error('Erro ao buscar promoções:', erro);
-        container.innerHTML = ` 
+        container.innerHTML = `
             <p class="erro-promocoes">
                 Erro ao carregar promoções. Tente novamente mais tarde.
                 <button onclick="buscarPromocoes('${filtroAtual}')" class="btn-recarregar">Tentar novamente</button>
