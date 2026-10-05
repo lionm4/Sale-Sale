@@ -33,11 +33,11 @@
         // ============================================
         // 2. BUSCA NA API
         // ============================================
-        $url = "https://www.cheapshark.com/api/1.0/games?id=" . urlencode($gameID);
+        $proxyUrl = "http://localhost/sale-sale/api/proxy.php?endpoint=games&params=" . urlencode("id={$gameID}");
 
 // Usa cURL em vez de file_get_contents
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_URL, $proxyUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Ignora verificação SSL (só para dev)

@@ -1,4 +1,12 @@
 // busca da barra de pesquisa
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchProxy(endpoint, params) {
+    const url = `../api/proxy.php?endpoint=${endpoint}&params=${encodeURIComponent(params)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+    return await res.json();
+}
 
 let timeoutID = null;
 let ultimaBusca = '';
@@ -17,56 +25,56 @@ export async function buscarJogos(query) {
     divResultado.innerHTML = "Buscando...";
 
     try {
-        const resBusca = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}`);
-        const dadosBusca = await resBusca.json();
+        const dadosBusca = await fetchProxy('games', `title=${encodeURIComponent(query)}`);
 
-        if (dadosBusca.length === 0) {
+        if (!dadosBusca || dadosBusca.length === 0) {
             divResultado.innerHTML = "Nenhum jogo encontrado com esse nome.";
             return;
         }
 
         const primeirosJogos = dadosBusca.slice(0, 5);
+        const jogosFiltrados = [];
 
-        const promessasDetalhes = primeirosJogos.map(jogo => 
-            fetch(`https://www.cheapshark.com/api/1.0/games?id=${jogo.gameID}`)
-                .then(res => res.json())
-                .then(detalhes => {
-                    const deals = detalhes.deals || [];
-                    
-                    // Conta TODAS as lojas disponíveis
-                    const numLojas = deals.length;
-                    
-                    // Conta lojas COM promoção ativa (savings > 0)
-                    const numLojasComPromocao = deals.filter(d => 
-                        parseFloat(d.savings) > 0
-                    ).length;
-                    
-                    return {
+        // ============================================
+        // 2. BUSCA DETALHES DE CADA JOGO (SEQUENCIAL COM DELAY)
+        // ============================================
+        for (const jogo of primeirosJogos) {
+            try {
+                const detalhes = await fetchProxy('games', `id=${jogo.gameID}`);
+                const deals = detalhes.deals || [];
+
+                // Conta lojas disponíveis e lojas com promoção
+                const numLojas = deals.length;
+                const numLojasComPromocao = deals.filter(d => 
+                    parseFloat(d.savings) > 0
+                ).length;
+
+                // Filtra: 2+ lojas E 1+ em promoção
+                if (numLojas >= 2 && numLojasComPromocao >= 1) {
+                    jogosFiltrados.push({
                         ...detalhes,
                         gameID: jogo.gameID,
                         numLojas: numLojas,
                         numLojasComPromocao: numLojasComPromocao
-                    };
-                })
-        );
+                    });
+                }
+            } catch (erro) {
+                console.warn(`Falha ao buscar jogo ${jogo.gameID}:`, erro);
+            }
 
-      const listaDetalhes = await Promise.all(promessasDetalhes);
+            // Delay de 200ms entre requisições
+            await sleep(200);
+        }
 
-
-
-        const jogosFiltrados = listaDetalhes.filter(dados => 
-            dados.numLojas >= 2 && dados.numLojasComPromocao >= 1
-        );
-
-        // Se nenhum jogo passou no filtro
+        // ============================================
+        // 3. RENDERIZA OS RESULTADOS
+        // ============================================
         if (jogosFiltrados.length === 0) {
             divResultado.innerHTML = "Nenhum jogo multiplataforma encontrado com promoção ativa.";
             return;
         }
 
-        // ============================================
-        // ETAPA 4: Renderiza os cards
-        // ============================================
+        
         divResultado.innerHTML = "";
 
         jogosFiltrados.forEach(dadosDetalhes => {
@@ -106,7 +114,7 @@ export async function buscarJogos(query) {
         console.error("Erro na requisição:", erro);
         divResultado.innerHTML = "Ocorreu um erro ao buscar os dados da API.";
     }
-}
+}   
 
 export function handleInput(event) {
     const query = event.target.value.trim();
