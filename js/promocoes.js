@@ -3,6 +3,21 @@ const cacheDetalhes = new Map();
 const CACHE_TTL = 5 * 60 * 1000;
 const LOJAS_PERMITIDAS = ['1', '25', '27', '29'];
 
+// pausa da requisição
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// proxy 
+async function fetchProxy(endpoint, params) {
+    const url = `../api/proxy.php?endpoint=${endpoint}&params=${encodeURIComponent(params)}`;
+    const res = await fetch(url);
+    
+    if (!res.ok) {
+        throw new Error(`Erro HTTP ${res.status}`);
+    }
+    
+    return await res.json();
+}
+
 async function buscarDetalhesComCache(gameID) {
         const agora = Date.now();
 
@@ -42,77 +57,74 @@ export async function buscarPromocoes(filtro = 'Mais avaliados') {
 
     container.innerHTML = '<p class="loading">Carregando promoções...</p>';
 
-    let url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=15';
+    let params = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=50&pageSize=30';
 
     switch (filtro) {
         case 'Mais Descontos':
-            url += '&sortBy=Savings&desc=true';
+            params += '&sortBy=Savings&desc=true';
             break;
         case 'Mais avaliados':
-            url += '&sortBy=DealRating&desc=true';
+            params += '&sortBy=DealRating&desc=true';
             break;
         case 'Lançamentos':
-            url += '&sortBy=Release&desc=true';
+            params += '&sortBy=Release&desc=true';
             break;
         default:
-            url += '&sortBy=Savings&desc=true';
+            params += '&sortBy=Savings&desc=true';
     }
 
     try {
-        const response = await fetch(url);
 
-        if (!response.ok) {
-            throw new Error('Erro ao buscar promoções');
-        }
+        // buscar com o proxy agora
 
-        const dados = await response.json();
 
-        if (dados.length === 0) {
+const dados = await fetchProxy('deals', params);
+
+        if (!dados || dados.length === 0) {
             container.innerHTML = '<p class="sem-promocoes">Nenhuma promoção disponível no momento.</p>';
             return;
         }
 
         container.innerHTML = '<p class="loading">Filtrando jogos multiplataforma...</p>';
 
+        // ============================================
+        // 2. BUSCA DETALHES DE CADA JOGO (SEQUENCIAL COM DELAY)
+        // ============================================
+        const dealsComLojas = [];
 
-        const promessasLojas = dados.map(deal => 
-            buscarDetalhesComCache(deal.gameID)
-                .then(detalhes => {
-                    const deals = detalhes.deals || [];
-                    
-                    // Filtra apenas as 4 lojas permitidas
-                    const dealsFiltrados = deals.filter(d => 
-                        LOJAS_PERMITIDAS.includes(String(d.storeID))
-                    );
-                    
-                    // Conta quantas lojas permitidas têm o jogo
-                    const numLojas = dealsFiltrados.length;
-                    
-                    // Conta quantas dessas estão em promoção (savings > 0)
-                    const numLojasComPromocao = dealsFiltrados.filter(d => 
+        for (const deal of dados) {
+            try {
+                const detalhes = await fetchProxy('games', `id=${deal.gameID}`);
+                const deals = detalhes.deals || [];
+                
+                // Filtra apenas as 4 lojas permitidas
+                const dealsFiltrados = deals.filter(d => 
+                    LOJAS_PERMITIDAS.includes(String(d.storeID))
+                );
+                
+                dealsComLojas.push({
+                    ...deal,
+                    numLojas: dealsFiltrados.length,
+                    numLojasComPromocao: dealsFiltrados.filter(d => 
                         parseFloat(d.savings) > 0
-                    ).length;
-                    
-                    return {
-                        ...deal,
-                        numLojas: numLojas,
-                        numLojasComPromocao: numLojasComPromocao
-                    };
-                })
-                .catch(erro => {
-                    console.error(`Erro no gameID ${deal.gameID}:`, erro);
-                    return { ...deal, numLojas: 0, numLojasComPromocao: 0 };
-                })
-        );
+                    ).length
+                });
+            } catch (erro) {
+                console.warn(`Falha ao buscar jogo ${deal.gameID}:`, erro);
+                // Continua para o próximo jogo
+            }
 
-        const dealsComLojas = await Promise.all(promessasLojas);
-        
-        // Filtra apenas jogos com 2 ou mais lojas
+            // Delay de 250ms entre requisições
+            await sleep(250);
+        }
+
+        // ============================================
+        // 3. FILTRA JOGOS COM 2+ LOJAS E 1+ EM PROMOÇÃO
+        // ============================================
         const dealsFiltrados = dealsComLojas.filter(deal => 
             deal.numLojas >= 2 && deal.numLojasComPromocao >= 1
         );
 
-        // Se não tiver nenhum, mostra mensagem
         if (dealsFiltrados.length === 0) {
             container.innerHTML = `
                 <p class="sem-promocoes">
