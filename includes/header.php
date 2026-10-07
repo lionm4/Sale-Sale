@@ -4,13 +4,13 @@
                 <a href="index.php"><img src="../assets/images/logo.png" alt="Sale-Sale"></a>
             </div>
 
-            <nav class="menu">
-                <a href="index.php">Homepage</a>
-                <a href="news.php">News</a>
-                <a href="compare.php">Compare</a>
+            <nav class="menu" aria-label="Navegação principal">
+                <a href="index.php">Página Inicial</a>
+                <a href="news.php">Notícias</a>
+                <a href="compare.php">Comparação</a>
             </nav>
 
-            <form id="formBusca" class="search-form">
+            <form id="formBusca" class="search-form" role="search" aria-label="Buscar jogos">
             <input 
                 id="inputJogo" 
                 type="search" 
@@ -34,7 +34,7 @@
                 </select>
 
                 
-                <button class="botao-tema" onclick="alternarTema()">Tema</button>
+                <button type="button" class="botao-tema" onclick="alternarTema()" aria-label="Alternar tema de cores">Tema</button>
             </div>
         </div>
 </header> 

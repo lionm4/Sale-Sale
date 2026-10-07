@@ -5,6 +5,12 @@ body.tema-claro {
     --azul-medio: #ffffff;
     --texto-escuro: #1a2440;
     --cinza-claro: #1a2440;
+    --cor-preco: #16824e;
+    background: linear-gradient(180deg, #ffffff 0%, #dddddd 100%);
+}
+
+body.tema-claro .promocoes-header h2 {
+    color: #000000;
 }
 
 /* tema claro / header */
@@ -77,6 +83,27 @@ body.tema-claro .promocao-card {
     border-color: #e2e8f0;
 }
 
+body.tema-claro .hero-ofertas {
+    background: linear-gradient(110deg, #edf1f5 0%, #e4eaf3 68%, #e8edf6 100%);
+}
+
+body.tema-claro .hero-copy h1 {
+    color: var(--texto-escuro);
+}
+
+body.tema-claro .hero-copy > p:not(.hero-etiqueta) {
+    color: #4b5563;
+}
+
+body.tema-claro .oferta-destaque .promocao-card {
+    background: rgba(255, 255, 255, 0.78);
+}
+
+body.tema-claro .oferta-destaque > .loading {
+    color: var(--texto-escuro);
+    background: rgba(255, 255, 255, 0.78);
+}
+
 body.tema-claro .promocao-card:hover {
     border-color: var(--azul-destaque);
 }
@@ -93,16 +120,42 @@ body.tema-claro .promocao-imagem {
     background: #f7fafc;
 }
 
-body.tema-claro .promocoes-filtros span {
+body.tema-claro .promocoes-filtros button {
     background: rgba(0, 0, 0, 0.05);
     color: #4a5568;
 }
 
-body.tema-claro .promocoes-filtros span:hover {
+body.tema-claro .promocoes-filtros button:hover {
     background: rgba(0, 0, 0, 0.08);
 }
 
 body.tema-claro .promocoes-filtros .filtro-ativo {
-    background: var(--azul-destaque) !important;
-    color: var(--branco) !important;
+    background: var(--cor-oferta);
+    color: var(--branco);
+}
+
+body.tema-claro .promocao-contexto span {
+    color: #4a5568;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+body.tema-claro .promocao-contexto .promocao-loja {
+    color: #26364d;
+    background: rgba(44, 88, 135, 0.12);
+}
+
+body.tema-claro .promocoes-controles select {
+    color: var(--texto-escuro);
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+body.tema-claro .imagem-indisponivel {
+    color: #303846;
+    background: linear-gradient(140deg, #e6e9ed, #cfd4da);
+}
+
+body.tema-claro .promocao-historico {
+    color: #5c6470;
+    border-color: rgba(0, 0, 0, 0.1);
 }

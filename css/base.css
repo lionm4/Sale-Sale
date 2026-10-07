@@ -16,6 +16,6 @@
 
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: var(--azul-medio);
+    background: linear-gradient(180deg, var(--azul-medio) 0%, var(--azul-escuro) 100%);
     color: var(--texto-escuro);
 }
