@@ -110,26 +110,48 @@
         
         <h2 style="color: white; margin-bottom: 20px;">💰 Preços nas lojas</h2>
         
-        <?php if (count($deals) === 0): ?>
+        <?php
+    // Define as 4 lojas que queremos exibir
+         $LOJAS_PERMITIDAS = ['1', '25', '27', '29'];
+
+// Filtra os deals para mostrar apenas essas lojas
+            $dealsFiltrados = array_filter($deals, function($deal) use ($LOJAS_PERMITIDAS) {
+        return in_array((string)$deal['storeID'], $LOJAS_PERMITIDAS);
+    });
+
+// Reindexa o array (importante para o foreach)
+            $dealsFiltrados = array_values($dealsFiltrados);
+        ?>
+        <?php if (count($dealsFiltrados) === 0): ?>
             <p style="color: #c7c9cf;">Nenhuma oferta disponível para este jogo.</p>
         <?php else: ?>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-                <?php foreach ($deals as $deal): ?>
+                <?php foreach ($dealsFiltrados as $deal): ?>
                     <?php
                     $lojas = [
-                        '1' => ['nome' => 'Steam', 'cor' => '#1b2838'],
-                        '2' => ['nome' => 'Epic Games', 'cor' => '#2a2a2a'],
-                        '3' => ['nome' => 'PlayStation', 'cor' => '#003791'],
-                        '4' => ['nome' => 'Xbox', 'cor' => '#107c10']
+                        '1'  => ['nome' => 'Steam',      'icone' => 'steam_logo.png'],
+                        '25' => ['nome' => 'Epic Games', 'icone' => 'epic_games.png'],
+                        '27' => ['nome' => 'PlayStation','icone' => 'playstation-store.png'], // Simulada
+                        '29' => ['nome' => 'Xbox Store', 'icone' => 'xbox_store.png']
                     ];
                     
                     $storeID = $deal['storeID'];
                     $preco = $deal['price'] ?? 'N/A';
-                    $loja = $lojas[$storeID] ?? ['nome' => 'Loja ' . $storeID, 'cor' => '#333'];
+                    $loja = $lojas[$storeID] ?? ['nome' => 'Loja ' . $storeID, 'icone' => 'placeholder.png'];
                     ?>
                     
                     <div style="background: #3a3f4b; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-                        <h3 style="color: white; margin: 0 0 10px 0;"><?php echo $loja['nome']; ?></h3>
+                         <img 
+                            src="../assets/images/<?php echo $loja['icone']; ?>" 
+                            alt="<?php echo $loja['nome']; ?>" 
+                            style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px;"
+                            onerror="this.style.display='none'"
+                        >
+
+                        <h3 style="color: white; margin: 0 0 10px 0;">
+                            <?php echo $loja['nome']; ?>
+                        </h3>
+
                         <?php if ($preco !== 'N/A'): ?>
                             <p style="color: #48bb78; font-size: 24px; font-weight: 700; margin: 0;">
                                 $<?php echo number_format($preco, 2); ?>
@@ -152,5 +174,7 @@
     </main>
     
     <?php include '../includes/footer.php'; ?>
+    
+<script type="module" src="../js/script.js"></script>
 </body>
 </html>

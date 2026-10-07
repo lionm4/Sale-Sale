@@ -1,5 +1,6 @@
 // busca da barra de pesquisa
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const LOJAS_PERMITIDAS = ['1', '25', '27', '29'];
 
 async function fetchProxy(endpoint, params) {
     const url = `../api/proxy.php?endpoint=${endpoint}&params=${encodeURIComponent(params)}`;
@@ -39,31 +40,38 @@ export async function buscarJogos(query) {
         // 2. BUSCA DETALHES DE CADA JOGO (SEQUENCIAL COM DELAY)
         // ============================================
         for (const jogo of primeirosJogos) {
-            try {
-                const detalhes = await fetchProxy('games', `id=${jogo.gameID}`);
-                const deals = detalhes.deals || [];
+    try {
+        const detalhes = await fetchProxy('games', `id=${jogo.gameID}`);
+        const deals = detalhes.deals || [];
 
-                // Conta lojas disponíveis e lojas com promoção
-                const numLojas = deals.length;
-                const numLojasComPromocao = deals.filter(d => 
-                    parseFloat(d.savings) > 0
-                ).length;
+        // ============================================
+        // FILTRA APENAS AS 4 LOJAS PERMITIDAS
+        // ============================================
+        const dealsFiltrados = deals.filter(d => 
+            LOJAS_PERMITIDAS.includes(String(d.storeID))
+        );
 
-                // Filtra: 2+ lojas E 1+ em promoção
-                if (numLojas >= 2 && numLojasComPromocao >= 1) {
-                    jogosFiltrados.push({
-                        ...detalhes,
-                        gameID: jogo.gameID,
-                        numLojas: numLojas,
-                        numLojasComPromocao: numLojasComPromocao
-                    });
-                }
-            } catch (erro) {
-                console.warn(`Falha ao buscar jogo ${jogo.gameID}:`, erro);
-            }
+        // Conta apenas as lojas filtradas
+        const numLojas = dealsFiltrados.length;
+        const numLojasComPromocao = dealsFiltrados.filter(d => 
+            parseFloat(d.savings) > 0
+        ).length;
 
-            // Delay de 200ms entre requisições
-            await sleep(200);
+        // Filtra: 2+ lojas E 1+ em promoção
+        if (numLojas >= 2 && numLojasComPromocao >= 1) {
+            jogosFiltrados.push({
+                ...detalhes,
+                gameID: jogo.gameID,
+                numLojas: numLojas,
+                numLojasComPromocao: numLojasComPromocao
+            });
+        }
+    } catch (erro) {
+        console.warn(`Falha ao buscar jogo ${jogo.gameID}:`, erro);
+    }
+
+    await sleep(200);
+
         }
 
         // ============================================
