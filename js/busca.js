@@ -47,7 +47,7 @@ export async function buscarJogos(query) {
         // ============================================
         // FILTRA APENAS AS 4 LOJAS PERMITIDAS
         // ============================================
-        const dealsFiltrados = deals.filter(d => 
+        const dealsFiltrados = deals.filter(d =>    
             LOJAS_PERMITIDAS.includes(String(d.storeID))
         );
 
