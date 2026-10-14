@@ -170,6 +170,10 @@ $dealsFiltrados = array_values($dealsFiltrados);
                     $preco = $deal['price'] ?? 'N/A';
                     $loja = $lojas[$storeID] ?? ['nome' => 'Loja ' . $storeID, 'icone' => 'placeholder.png'];
                     $ehMelhorPreco = ($storeID === $melhorLojaID);
+                    $dealID = is_string($deal['dealID'] ?? null) ? $deal['dealID'] : '';
+                    $urlOferta = $dealID !== ''
+                        ? 'https://www.cheapshark.com/redirect?dealID=' . $dealID
+                        : '';
                     ?>
                     
                     <div class="loja-card <?php echo $ehMelhorPreco ? 'melhor-preco' : ''; ?>">
@@ -189,6 +193,15 @@ $dealsFiltrados = array_values($dealsFiltrados);
                              <p class="preco">$<?php echo number_format($preco, 2); ?></p>
                         <?php else: ?>
                               <p style="color: #a0aec0; font-size: 16px; margin: 0;">Indisponível</p>
+                        <?php endif; ?>
+
+                        <?php if ($urlOferta !== ''): ?>
+                            <a
+                                class="link-oferta"
+                                href="<?php echo htmlspecialchars($urlOferta, ENT_QUOTES, 'UTF-8'); ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >Visitar loja</a>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>

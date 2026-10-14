@@ -43,6 +43,28 @@
     margin: 0;
 }
 
+.loja-card .link-oferta {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 9px 14px;
+    border-radius: 6px;
+    background: var(--azul-destaque);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.loja-card .link-oferta:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.loja-card .link-oferta:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}
+
 /* ============================================
    DESTAQUE DO MELHOR PREÇO
    ============================================ */
