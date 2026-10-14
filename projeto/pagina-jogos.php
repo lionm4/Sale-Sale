@@ -110,32 +110,85 @@
         
         <h2 style="color: white; margin-bottom: 20px;">💰 Preços nas lojas</h2>
         
-        <?php if (count($deals) === 0): ?>
+        <?php
+    // 4 lojas sendo steam, epic e mais outras para exemplificar playstation store e xbox store
+         $LOJAS_PERMITIDAS = ['1', '25', '27', '29'];
+
+
+            $dealsFiltrados = array_filter($deals, function($deal) use ($LOJAS_PERMITIDAS) {
+        return in_array((string)$deal['storeID'], $LOJAS_PERMITIDAS);
+    });
+
+         $dealsAgrupados = [];
+            foreach ($dealsFiltrados as $deal) {
+            $storeID = (string)$deal['storeID'];
+            $preco = floatval($deal['price']);
+
+            if (!isset($dealsAgrupados[$storeID])) {
+                $dealsAgrupados[$storeID] = $deal;
+                } else {
+                     $precoAtual = floatval($dealsAgrupados[$storeID]['price']);
+                     if ($preco < $precoAtual) {
+            $dealsAgrupados[$storeID] = $deal;
+               }
+         }
+    }
+
+$dealsFiltrados = array_values($dealsAgrupados);
+
+$menorPreco = null;
+$melhorLojaID = null;
+
+foreach ($dealsFiltrados as $deal) {
+    $preco = floatval($deal['price']);
+    
+    // logica pra identificar o menor preço
+    if ($menorPreco === null || $preco < $menorPreco) {
+        $menorPreco = $preco;
+        $melhorLojaID = (string)$deal['storeID'];
+    }
+}
+
+
+
+$dealsFiltrados = array_values($dealsFiltrados);
+        ?>
+        <?php if (count($dealsFiltrados) === 0): ?>
             <p style="color: #c7c9cf;">Nenhuma oferta disponível para este jogo.</p>
         <?php else: ?>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-                <?php foreach ($deals as $deal): ?>
+                <?php foreach ($dealsFiltrados as $deal): ?>
                     <?php
                     $lojas = [
-                        '1' => ['nome' => 'Steam', 'cor' => '#1b2838'],
-                        '2' => ['nome' => 'Epic Games', 'cor' => '#2a2a2a'],
-                        '3' => ['nome' => 'PlayStation', 'cor' => '#003791'],
-                        '4' => ['nome' => 'Xbox', 'cor' => '#107c10']
+                        '1'  => ['nome' => 'Steam',      'icone' => 'steam_logo.png'],
+                        '25' => ['nome' => 'Epic Games', 'icone' => 'epic_games.png'],
+                        '27' => ['nome' => 'PlayStation','icone' => 'playstation-store.png'], // Simulada
+                        '29' => ['nome' => 'Xbox Store', 'icone' => 'xbox_store.png']
                     ];
                     
                     $storeID = $deal['storeID'];
                     $preco = $deal['price'] ?? 'N/A';
-                    $loja = $lojas[$storeID] ?? ['nome' => 'Loja ' . $storeID, 'cor' => '#333'];
+                    $loja = $lojas[$storeID] ?? ['nome' => 'Loja ' . $storeID, 'icone' => 'placeholder.png'];
+                    $ehMelhorPreco = ($storeID === $melhorLojaID);
                     ?>
                     
-                    <div style="background: #3a3f4b; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-                        <h3 style="color: white; margin: 0 0 10px 0;"><?php echo $loja['nome']; ?></h3>
+                    <div class="loja-card <?php echo $ehMelhorPreco ? 'melhor-preco' : ''; ?>">
+                        <?php if ($ehMelhorPreco): ?>
+                                <span class="badge-melhor-preco">🏆 Melhor preço</span>
+                        <?php endif; ?>
+    
+                        <img 
+                            src="../assets/images/<?php echo $loja['icone']; ?>" 
+                            alt="<?php echo $loja['nome']; ?>"
+                            onerror="this.style.display='none'"
+                        >
+    
+                        <h3><?php echo $loja['nome']; ?></h3>
+    
                         <?php if ($preco !== 'N/A'): ?>
-                            <p style="color: #48bb78; font-size: 24px; font-weight: 700; margin: 0;">
-                                $<?php echo number_format($preco, 2); ?>
-                            </p>
+                             <p class="preco">$<?php echo number_format($preco, 2); ?></p>
                         <?php else: ?>
-                            <p style="color: #a0aec0; font-size: 16px; margin: 0;">Indisponível</p>
+                              <p style="color: #a0aec0; font-size: 16px; margin: 0;">Indisponível</p>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -152,5 +205,7 @@
     </main>
     
     <?php include '../includes/footer.php'; ?>
+    
+<script type="module" src="../js/script.js"></script>
 </body>
 </html>

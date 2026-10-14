@@ -1,5 +1,26 @@
 <?php
+function limparCacheAntigo($cacheDir, $horasExpiracao = 24) {
+    if (!is_dir($cacheDir)) return;
+    
+    $arquivos = glob($cacheDir . '*.json');
+    $agora = time();
+    $segundosExpiracao = $horasExpiracao * 3600;
+    $limpos = 0;
+    
+    foreach ($arquivos as $arquivo) {
+        if (($agora - filemtime($arquivo)) > $segundosExpiracao) {
+            @unlink($arquivo);
+            $limpos++;
+        }
+    }
+    
+    return $limpos;
+}
 
+// Executa a limpeza (com 5% de chance em cada requisição, para não pesar)
+if (mt_rand(1, 100) <= 5) {
+    limparCacheAntigo($cacheDir, 24);
+}
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 

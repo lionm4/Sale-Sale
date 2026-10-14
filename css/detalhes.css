@@ -1,0 +1,121 @@
+.lojas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Card base */
+.loja-card {
+    background: #3a3f4b;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.loja-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--azul-destaque);
+}
+
+/* Ícone da loja */
+.loja-card img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+/* Nome da loja */
+.loja-card h3 {
+    color: white;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+/* Preço */
+.loja-card .preco {
+    color: #48bb78;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ============================================
+   DESTAQUE DO MELHOR PREÇO
+   ============================================ */
+
+.loja-card.melhor-preco {
+    background: rgba(72, 187, 120, 0.1);
+    border-color: #48bb78;
+    box-shadow: 0 0 30px rgba(72, 187, 120, 0.2);
+    transform: scale(1.03);
+}
+
+.loja-card.melhor-preco:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 0 40px rgba(72, 187, 120, 0.3);
+}
+
+/* Badge "Melhor Preço" */
+.badge-melhor-preco {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #48bb78;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4);
+    animation: pulse-melhor 2s ease-in-out infinite;
+}
+
+/* Animação de destaque */
+@keyframes pulse-melhor {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4);
+    }
+    50% {
+        box-shadow: 0 2px 16px rgba(72, 187, 120, 0.7);
+    }
+}
+
+/* Preço no card destacado */
+.loja-card.melhor-preco .preco {
+    font-size: 28px;
+    color: #48bb78;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .lojas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .loja-card {
+        padding: 15px;
+    }
+    
+    .loja-card img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .loja-card .preco {
+        font-size: 20px;
+    }
+    
+    .loja-card.melhor-preco .preco {
+        font-size: 22px;
+    }
+    
+    .badge-melhor-preco {
+        font-size: 10px;
+        padding: 2px 8px;
+    }
+}
